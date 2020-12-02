@@ -471,16 +471,36 @@ leaflet(mpls_all) %>%
             title = NULL) 
 
 ```
-
 The neighborhood with the most stops by suspicion is in Downtown West neighborhood.
 
   18. Use `leaflet` to create a map of your own choosing. Come up with a question you want to try to answer and use the map to help answer that question. Describe what your map shows. 
-```{r}
-average_prop_sus <- mpls_all %>% 
-  replace_na(list(prop_suspicious = 0)) %>% 
-  summarise(avg_prop = sum(prop_suspicious)/n)
-``` 
   
+  Which neighborhoods 5 have much higher proportion of college graduates than the average proportion of college graduates?
+```{r}
+average_collegeGrad <- mpls_all %>% 
+  replace_na(list(collegeGrad = 0)) %>% 
+  summarize(avg_prop = sum(collegeGrad)/83) 
+  
+pal <- colorNumeric("viridis", 
+                     domain = mpls_all$collegeGrad) 
+
+leaflet(mpls_all) %>% 
+  addTiles() %>% 
+  addPolygons(
+    fillColor = ~pal(collegeGrad), 
+    fillOpacity = 0.7,
+    popup = ~paste(BDNAME,": ",
+                   round(collegeGrad, 2), 
+                   "; Avg. College Grads. :", 
+                   round(average_collegeGrad$avg_prop, 2)))%>% 
+  addLegend(pal = pal,
+            values = ~collegeGrad,
+            opacity = 0.5,
+            position = "bottomleft",
+            title = NULL) 
+``` 
+Lowry Hill, East Isles, Hulton, ECCO, Lynhurst are the top 5 neighborhoods with the highest above average college gradautes proportion.
+
 ## GitHub link
 
   19. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 04_exercises.Rmd, provide a link to the 04_exercises.md file, which is the one that will be most readable on GitHub.
